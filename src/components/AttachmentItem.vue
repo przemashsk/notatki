@@ -1,26 +1,43 @@
 <template>
-    <div class="relative group w-24 h-24">
-        <img :src="publicImgUrl" class="object-cover w-full h-full rounded-md" />
-        <button
-            class="absolute top-2 right-2 bg-black/70 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-80 hover:opacity-100 active:scale-95 transition duration-200 shadow-md"
-            @click="del" title="Usuń">
+    <!-- 🖼️ modal pełnoekranowy -->
+    <div v-if="showPreview" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+        @click.self="showPreview = false">
+        <img :src="publicImgUrl" class="max-w-full max-h-full object-contain rounded-md shadow-lg" />
+        <!-- Przycisk zamykania -->
+        <button class="absolute top-4 right-4 text-white text-3xl font-bold hover:scale-110 transition"
+            @click="showPreview = false" aria-label="Zamknij">
             ✕
         </button>
+    </div>
 
-        <!-- <pre>{{ att.id }}</pre> -->
+    <!-- 🖼️ miniatura załącznika -->
+    <div class="relative group w-24 h-24 cursor-pointer">
+        <img :src="publicImgUrl" class="object-cover w-full h-full rounded-md" @click="showPreview = true" />
+
+        <button
+            class="absolute top-2 right-2 bg-black/70 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-80 hover:opacity-100 active:scale-95 transition duration-200 shadow-md z-10"
+            @click.stop="del" title="Usuń">
+            ✕
+        </button>
     </div>
 </template>
+
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useNotes, type Attachment } from '@/stores/useNotes'
+
 const props = defineProps<{ att: Attachment }>()
 const notes = useNotes()
-// function del() { notes.deleteFile(props.att) }
-// function del() { notes.deleteFile(props.att.id) }
-function del() { notes.removeAttachment(props.att.id) }
-const publicImgUrl = computed(() => {
-    // if (!att) return null
 
-    return `https://ntytzgwnrhehmgwtrnci.supabase.co/storage/v1/object/public/attachments/${props.att.storage_path}`
-})
+const showPreview = ref(false)
+
+function del() {
+    if (confirm('Na pewno chcesz usunąć ten załącznik?')) {
+        notes.removeAttachment(props.att.id)
+    }
+}
+
+const publicImgUrl = computed(() =>
+    `https://ntytzgwnrhehmgwtrnci.supabase.co/storage/v1/object/public/attachments/${props.att.storage_path}`
+)
 </script>

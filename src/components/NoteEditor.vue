@@ -1,6 +1,8 @@
 <template>
     <div v-if="open" class="p-3 fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div class="bg-white w-full max-w-lg rounded-2xl p-4 shadow-xl">
+        <!-- <div class="bg-white w-full max-w-lg rounded-2xl p-4 shadow-xl"> -->
+        <div class="bg-white w-full max-w-lg rounded-2xl p-4 shadow-xl overflow-y-auto max-h-screen  scrollbar-thin">
+
             <h2 class="text-xl font-semibold mb-4">
                 {{ isNew ? 'Nowa notatka' : 'Edytuj notatkę' }}
             </h2>
@@ -10,10 +12,23 @@
                 <input v-model="form.title" placeholder="Tytuł" class="w-full border rounded-md p-2" />
                 <textarea v-model="form.content" rows="6" class="w-full border rounded-md p-2" />
 
-                <div class="flex items-center gap-2 text-sm">
+                <!-- <div class="flex items-center gap-2 text-sm">
                     <span>Kolor:</span>
                     <input type="color" v-model="form.color" class="h-8 w-8 border rounded-md p-0" />
+                </div> -->
+
+                <!-- W formularzu -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium">Kolor:</label>
+                    <div class="grid grid-cols-5 gap-2">
+                        <div v-for="color in colors" :key="color" :class="[
+                            'w-8 h-8 rounded cursor-pointer border-2',
+                            form.color === color ? 'border-black' : 'border-transparent',
+                            color
+                        ]" @click="form.color = color"></div>
+                    </div>
                 </div>
+
 
                 <!-- checklist -->
                 <div v-if="noteId" class="space-y-2 border-t pt-4">
@@ -59,6 +74,30 @@ import { ref, watch, computed } from 'vue'
 import { useNotes } from '@/stores/useNotes'
 import CheckItem from '@/components/CheckItem.vue'
 import AttachmentItem from '@/components/AttachmentItem.vue'
+
+const colors = [
+    'bg-red-200',
+    'bg-orange-200',
+    'bg-amber-200',
+    'bg-yellow-200',
+    'bg-lime-200',
+    'bg-green-200',
+    'bg-emerald-200',
+    'bg-teal-200',
+    'bg-cyan-200',
+    'bg-sky-200',
+    'bg-blue-200',
+    'bg-indigo-200',
+    'bg-violet-200',
+    'bg-purple-200',
+    'bg-fuchsia-200',
+    'bg-pink-200',
+    'bg-rose-200',
+    'bg-neutral-200',
+    'bg-gray-200',
+    'bg-zinc-200',
+]
+
 
 const props = defineProps<{ noteId?: string; open: boolean }>()
 const emit = defineEmits(['update:open', 'saved'])

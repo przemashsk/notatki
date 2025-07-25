@@ -3,7 +3,7 @@
         <input type="checkbox" :checked="item.checked" class="h-4 w-4 accent-emerald-600" @change="toggle" />
 
         <input v-model="localText" @blur="saveText"
-            class="flex-1 border-b border-transparent focus:border-emerald-600 outline-none bg-transparent" />
+            class="flex-1 border-b borderd-transparent focus:border-emerald-600 outline-none bg-transparent" />
 
         <button class="text-red-500 hover:text-red-600 px-1" @click="remove" title="Usuń">✕</button>
     </label>

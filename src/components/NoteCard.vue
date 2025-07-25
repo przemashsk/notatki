@@ -25,7 +25,7 @@ import { useNotes, type Note } from '@/stores/useNotes'
 const props = defineProps<{ note: Note }>()
 
 const bgColor = computed(() =>
-  props.note.color ? `bg-[${props.note.color}]` : 'bg-white'
+  props.note.color ? `${props.note.color}` : 'bg-white'
 )
 
 
