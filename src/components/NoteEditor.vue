@@ -1,7 +1,13 @@
+<style>
+#modal {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+</style>
 <template>
     <div v-if="open" class="p-3 fixed inset-0 z-50 flex items-center justify-center bg-black/40">
         <!-- <div class="bg-white w-full max-w-lg rounded-2xl p-4 shadow-xl"> -->
-        <div class="bg-white w-full max-w-lg rounded-2xl p-4 shadow-xl overflow-y-auto max-h-screen  scrollbar-thin">
+        <div id="modal" class="bg-white w-full max-w-lg rounded-2xl p-4 shadow-xl overflow-y-auto scrollbar-thin">
 
             <h2 class="text-xl font-semibold mb-4">
                 {{ isNew ? 'Nowa notatka' : 'Edytuj notatkę' }}

@@ -1,6 +1,6 @@
 <template>
     <div
-        class="min-h-screen flex flex-col items-center justify-center gap-8 p-6 bg-gradient-to-br from-emerald-50 to-sky-100">
+        class="h-full flex flex-col items-center justify-center gap-8 p-6 bg-gradient-to-br from-emerald-50 to-sky-100">
         <h1 class="text-4xl font-extrabold text-emerald-700 drop-shadow-md">Notatki</h1>
 
         <!-- Ładny przycisk Google -->

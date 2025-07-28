@@ -4,9 +4,14 @@
     <div class="flex-1 overflow-y-auto">
       <router-view />
     </div>
+    <footer class="text-center text-xs text-gray-500 py-2 border-t">
+      Wersja aplikacji: {{ appVersion }}
+    </footer>
   </div>
 </template>
 
 <script setup lang="ts">
 import Navbar from '@/components/Navbar.vue'
+
+const appVersion = __APP_VERSION__
 </script>

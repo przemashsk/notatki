@@ -1,12 +1,13 @@
 {
   "name": "notatki",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && node deploy.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.52.0",
@@ -24,6 +25,7 @@
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.21",
+    "ftp-deploy": "^2.4.7",
     "postcss": "^8.5.6",
     "prettier": "^2.8.8",
     "tailwindcss": "^4.1.11",
