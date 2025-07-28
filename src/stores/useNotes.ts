@@ -99,13 +99,33 @@ export const useNotes = defineStore('notes', {
 
     },
     async uploadFile(noteId: string, file: File) {
-      const path = `${noteId}/${crypto.randomUUID()}-${file.name}`
+      function sanitizeFileName(name: string) {
+        return name
+          .normalize('NFKD')                      // zamienia znaki diakrytyczne na ASCII
+          .replace(/[^\w\s.-]/g, '')              // usuwa znaki specjalne
+          .replace(/\s+/g, '_')                   // spacje → podkreślenia
+          .replace(/_+/g, '_')                    // wielokrotne podkreślenia
+          .toLowerCase()
+      }
+      const originalName = file.name
+      const safeName = sanitizeFileName(originalName)
+
+      const path = `${noteId}/${crypto.randomUUID()}-${safeName}`
 
       const { error: uploadError } = await supabase.storage
         .from('attachments')
         .upload(path, file)
 
       if (uploadError) throw uploadError
+
+
+      // const uniquePath = `${noteId}/${uuid()}-${safeName}`
+
+      // await supabase.storage
+      //   .from('attachments')
+      //   .upload(uniquePath, file)
+
+
 
       const { error: insertError } = await supabase
         .from('attachments')
