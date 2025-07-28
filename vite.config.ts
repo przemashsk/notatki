@@ -9,6 +9,8 @@ import { fileURLToPath, URL } from 'node:url'   // 👈 1
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
   // base: '/notatki/',
+
+  base: './', // lub '/' jeśli hostujesz z root domeny
   resolve: {                                    // 👈 2
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

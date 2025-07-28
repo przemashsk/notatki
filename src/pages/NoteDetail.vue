@@ -1,6 +1,7 @@
 <template>
-    <NoteEditor :note-id="id" :open="open" @saved="router.back()"
-        @update:open="val => { open = val; if (!val) router.back(); }" />
+    <NoteEditor :note-id="id" :open="open" @saved="router.push('/')"
+        @update:open="val => { open = val; if (!val) router.push('/') }" />
+
 </template>
 
 <script setup lang="ts">
