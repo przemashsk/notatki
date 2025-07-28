@@ -37,6 +37,7 @@ export const useNotes = defineStore('notes', {
     items: {} as Record<string, CheckItem[]>,   // key = note_id
     loading: false,
     attachments: {} as Record<string, Attachment[]>,
+    uploadingAttachment: {} as Record<string, boolean>, // 👈 nowy
   }),
 
   actions: {
@@ -98,55 +99,46 @@ export const useNotes = defineStore('notes', {
       // this.attachments[noteId] = updated
 
     },
-    async uploadFile(noteId: string, file: File) {
-      function sanitizeFileName(name: string) {
-        return name
-          .normalize('NFKD')                      // zamienia znaki diakrytyczne na ASCII
-          .replace(/[^\w\s.-]/g, '')              // usuwa znaki specjalne
-          .replace(/\s+/g, '_')                   // spacje → podkreślenia
-          .replace(/_+/g, '_')                    // wielokrotne podkreślenia
-          .toLowerCase()
-      }
-      const originalName = file.name
-      const safeName = sanitizeFileName(originalName)
-
-      const path = `${noteId}/${crypto.randomUUID()}-${safeName}`
-
-      const { error: uploadError } = await supabase.storage
-        .from('attachments')
-        .upload(path, file)
-
-      if (uploadError) throw uploadError
-
-
-      // const uniquePath = `${noteId}/${uuid()}-${safeName}`
-
-      // await supabase.storage
-      //   .from('attachments')
-      //   .upload(uniquePath, file)
-
-
-
-      const { error: insertError } = await supabase
-        .from('attachments')
-        .insert({
-          note_id: noteId,
-          file_name: file.name,
-          storage_path: path,
-          mime_type: file.type,
-          size: file.size,
-        })
-        .select('*')
-        .single()
-
-      if (insertError) throw insertError
-
-      // ✅ Nie dodajemy lokalnie — tylko odświeżamy z Supabase
-      await this.loadAttachments(noteId)
+    sanitizeFileName(name: string) {
+      return name
+        .normalize('NFKD')                      // zamienia np. ą → a, ó → o
+        .replace(/[^\w\s.-]/g, '')              // usuwa wszystkie znaki oprócz liter, cyfr, podkreśleń, spacji, myślników i kropek
+        .replace(/\s+/g, '_')                   // spacje → _
+        .replace(/_+/g, '_')                    // wiele podkreśleń → jedno
+        .toLowerCase()
     },
 
+    async uploadFile(noteId: string, file: File) {
+      this.uploadingAttachment[noteId] = true
+      try {
+        const safeName = this.sanitizeFileName(file.name)
+        const path = `${noteId}/${crypto.randomUUID()}-${safeName}`
 
+        const { error: uploadError } = await supabase.storage
+          .from('attachments')
+          .upload(path, file)
 
+        if (uploadError) throw uploadError
+
+        const { error: insertError } = await supabase
+          .from('attachments')
+          .insert({
+            note_id: noteId,
+            file_name: file.name,
+            storage_path: path,
+            mime_type: file.type,
+            size: file.size,
+          })
+          .select('*')
+          .single()
+
+        if (insertError) throw insertError
+
+        await this.loadAttachments(noteId)
+      } finally {
+        this.uploadingAttachment[noteId] = false
+      }
+    },
 
     // delete
     async deleteFile(att: Attachment) {
